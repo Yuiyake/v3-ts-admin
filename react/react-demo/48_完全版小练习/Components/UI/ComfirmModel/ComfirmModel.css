@@ -1,0 +1,40 @@
+.confirmModel{
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height: 200px;
+    background: #FFFFFF;
+    position: absolute;
+    padding: 10px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+.confirmText {
+    display: flex;
+    height: 150px;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    color: #D62828;
+}
+.confirmBtn {
+    flex: auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.confirmBtn button {
+    width: 80px;
+    margin: 0 10px;
+    border: none;
+    background-color: #EAE287;
+    font-weight: bold;
+    font-size: 18px;
+}
+.confirmBtn .okBtn {
+    background-color: #D62828;
+    color: #FFFFFF;
+}
