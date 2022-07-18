@@ -1,14 +1,24 @@
 <template>
   <el-dialog v-model="visible" title="Shipping address" :before-close="close">
-    <el-form :model="form" :label-width="formLabelWidth">
-      <el-form-item label="Promotion name" >
-        <el-input v-model="form.name" autocomplete="off" />
+    <el-form :model="newForm" :label-width="formLabelWidth">
+      <el-form-item label="账号：" >
+        <el-input v-model="newForm.username" autocomplete="off" />
       </el-form-item>
-      <el-form-item label="Zones" >
-        <el-select v-model="form.region" placeholder="Please select a zone">
-          <el-option label="Zone No.1" value="shanghai" />
-          <el-option label="Zone No.2" value="beijing" />
-        </el-select>
+      <el-form-item label="姓名：" >
+        <el-input v-model="newForm.nickName" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="邮箱：" >
+        <el-input v-model="newForm.email" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="密码：" >
+        <el-input v-model="newForm.password" type="password" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="备注：" >
+        <el-input v-model="newForm.note" type="textarea" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="是否启用：" >
+        <el-radio v-model="newForm.status" :label="1">是</el-radio>
+        <el-radio v-model="newForm.status" :label="0">否</el-radio>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -23,30 +33,40 @@
 </template>
 
 <script lang='ts' setup>
-import { reactive, toRefs, ref } from 'vue'
+import { reactive, toRefs, ref, toRef, watch } from 'vue'
+import {updateAdminInfoApi} from '../../../request/api'
+
 
 const props = defineProps<{
-  visible: boolean
+  visible: boolean,
+  form: adminObjItf,
 }>();
 
-const state = reactive({
-  form: {
-    name: '',
-
-  },
-  formLabelWidth: '120px'
+const state = reactive<{formLabelWidth: string; newForm:adminObjItf}>({
+  formLabelWidth: '120px',
+  newForm: {}
 })
-const { form, formLabelWidth } = toRefs(state)
+const { formLabelWidth, newForm } = toRefs(state)
+
+// 因为setup是在beforeCreate之前的，所以要用监听，再拷贝
+watch(() => props.form, () => {
+  newForm.value = {...props.form};
+})
 
 const emit = defineEmits<{
-  (event: 'close'): void
+  (event: 'close', r?: 'reload'): void
 }>();
-const close = () => {
+const close = (r?: 'reload') => {
   // 把关闭的指令传到父组件，让父组件来处理visible的状态
-  emit('close')
+  emit('close', r)
 }
 const modifyAdmin = () => {
-  close();
+  updateAdminInfoApi(newForm.value.id as number, newForm.value).then(res => {
+    if(res.code === 200){
+      close('reload');
+    }
+  })
+
 }
 
 </script>

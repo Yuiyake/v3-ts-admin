@@ -21,13 +21,13 @@
        </template>
      </el-table-column>
      <el-table-column label="操作" >
-       <template #default>
+       <template #default="{ row }">
          <el-button type="text">分配角色</el-button>
-         <el-button type="text" @click="editAdmin">编辑</el-button>
+         <el-button type="text" @click="editAdmin(row)">编辑</el-button>
        </template>
      </el-table-column>
    </el-table>
-   <EditAdmin :visible="visible" @close="closeDialog" />
+   <EditAdmin :visible="visible" @close="closeDialog" :form="rowData" />
  </div>
 </template>
 
@@ -39,21 +39,26 @@ import EditAdmin from './conponents/editAdmin.vue'
 const state = reactive<{
   tableData: {}[];
   visible: boolean;
+  rowData: adminObjItf
 }>({
   tableData: [],
   visible: false,
+  rowData: {}
 })
-const {tableData, visible} = toRefs(state);
+const {tableData, visible, rowData} = toRefs(state);
 
-getAdminListApi({
-  keyword: '',
-  pageSize: 10,
-  pageNum: 1
-}).then(res => {
-  if(res.code === 200){
-    tableData.value = res.data.list
-  }
-})
+const fetchData = () => {
+  getAdminListApi({
+    keyword: '',
+    pageSize: 10,
+    pageNum: 1
+  }).then(res => {
+    if(res.code === 200){
+      tableData.value = res.data.list
+    }
+  })
+}
+fetchData();
 
 // 格式化时间
 const formateDate = (time: string | undefined) => {
@@ -71,11 +76,15 @@ const addZero = (num:number) => {
   return num>9? num: '0'+num;
 }
 
-const editAdmin = () => {
+const editAdmin = (row: adminObjItf) => {
   visible.value = true;
+  rowData.value = {...row};
 }
-const closeDialog = () => {
+const closeDialog = (r?: 'reload') => {
   visible.value = false;
+  if(r === 'reload') {
+    fetchData();
+  }
 }
 
 

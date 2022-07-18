@@ -5,7 +5,7 @@ interface AdminLoginData {
     "username": string
 }
 
-type promiseRes<T> = Promise<ManageResult<T>>
+type promiseRes<T = {}> = Promise<ManageResult<T>>
 
 interface ManageResult<T> {
     code: number,
@@ -37,3 +37,5 @@ export const adminLoginApi = (data: AdminLoginData):promiseRes<AdminLoginRes> =>
 export const getAdminInfoApi = ():promiseRes<AdminInfoRes> => request.get('/admin/info')
 // 获取用户权限表格数据
 export const getAdminListApi = (data: adminListParams):promiseRes<{ list: {}[] }> => request.get('/admin/list', {params: data})
+// 修改用户信息
+export const updateAdminInfoApi = (id: number, data: adminObjItf):promiseRes => request.post('/admin/update/' + id , data)
