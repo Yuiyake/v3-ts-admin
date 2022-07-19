@@ -7,3 +7,9 @@ interface adminObjItf {
     note?: string;
     status?: boolean;
 }
+
+interface AdminRoleFormData {
+    userRoles: RoleObjItf[];
+    roleLists: RoleObjItf[];
+    adminId: number;
+}
